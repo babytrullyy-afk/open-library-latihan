@@ -1,191 +1,901 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Ruang Baca — katalog bacaan anak yang menyenangkan, ringan, dan mudah diakses.">
-<title>Ruang Baca — Cerita untuk Setiap Imajinasi</title>
+<meta name="description" content="Ruang Baca adalah katalog bacaan digital untuk anak dan remaja.">
+<title>Ruang Baca | Open Library</title>
+
 <style>
-:root{
-  --ink:#20332d;--muted:#687a72;--cream:#fbf8f1;--paper:#fffdf8;
-  --green:#285b49;--mint:#dceee4;--orange:#f1a45b;--pink:#f6dfd8;
-  --yellow:#f5e8b8;--line:#e9e5da;--shadow:0 16px 45px rgba(39,67,54,.09);
+:root {
+  --green: #285b49;
+  --green-dark: #1d4034;
+  --cream: #fbf8f1;
+  --white: #fffdf8;
+  --mint: #dceee4;
+  --orange: #f1a45b;
+  --ink: #20332d;
+  --muted: #687a72;
+  --line: #e9e5da;
+  --pink: #f6dfd8;
+  --shadow: 0 12px 35px rgba(39,67,54,.09);
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--cream);color:var(--ink);font-family:ui-rounded,"Segoe UI",Arial,sans-serif;line-height:1.55}
-a{color:inherit}
-header{position:sticky;top:0;z-index:10;background:rgba(251,248,241,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(233,229,218,.8)}
-.nav{max-width:1160px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:850;font-size:1.2rem;letter-spacing:-.5px}
-.logo{width:38px;height:38px;border-radius:13px;background:var(--green);display:grid;place-items:center;color:white;font-size:20px}
-.navlinks{display:flex;gap:25px;align-items:center}
-.navlinks a{text-decoration:none;color:var(--muted);font-size:.92rem;font-weight:650}
-.navlinks a:hover{color:var(--green)}
-.nav-cta{background:var(--green);color:white!important;padding:10px 16px;border-radius:999px}
-main{max-width:1160px;margin:auto;padding:0 24px}
-.hero{padding:64px 0 54px;display:grid;grid-template-columns:1.08fr .92fr;gap:38px;align-items:center}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--green);background:var(--mint);border-radius:99px;padding:7px 13px;font-size:.78rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
-h1{font-size:clamp(2.65rem,5.4vw,4.8rem);line-height:1.02;letter-spacing:-3px;margin:20px 0 18px;max-width:650px}
-h1 span{color:var(--green);font-family:Georgia,serif;font-style:italic;font-weight:500}
-.hero p{color:var(--muted);font-size:1.08rem;max-width:530px;margin:0 0 26px}
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 19px;border-radius:999px;text-decoration:none;font-weight:750;border:1px solid var(--green)}
-.btn.primary{background:var(--green);color:white}
-.btn.secondary{color:var(--green);background:transparent}
-.hero-art{min-height:360px;position:relative;display:grid;place-items:center}
-.blob{position:absolute;width:min(100%,430px);height:330px;border-radius:48% 52% 42% 58%/55% 42% 58% 45%;background:var(--mint);transform:rotate(-7deg)}
-.book-stack{position:relative;width:280px;height:260px;display:flex;align-items:end;justify-content:center;filter:drop-shadow(0 18px 15px rgba(32,51,45,.14))}
-.book{position:absolute;width:145px;height:205px;border-radius:9px 16px 16px 9px;border-left:8px solid rgba(0,0,0,.1);box-shadow:inset 8px 0 rgba(255,255,255,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:15px;color:#fff}
-.book b{font-family:Georgia,serif;font-size:1.35rem;line-height:1.1}
-.book small{margin-top:12px;opacity:.85}
-.book.one{background:#d47b54;transform:rotate(-13deg) translate(-66px,7px)}
-.book.two{background:#557e69;transform:rotate(8deg) translate(52px,-5px)}
-.book.three{background:#d7aa4e;transform:rotate(-1deg) translate(-4px,-25px);z-index:2;color:#3d3829}
-.spark{position:absolute;font-size:2rem}.s1{top:20px;right:45px}.s2{bottom:24px;left:40px}.s3{top:75px;left:10px;font-size:1.4rem}
-.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:18px 0 22px}
-.section-head h2{font-size:2rem;letter-spacing:-1px;margin:0}
-.section-head p{color:var(--muted);margin:5px 0 0}
-.catalog{padding:20px 0 76px}
-.toolbar{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}
-.search{flex:1;min-width:220px;position:relative}
-.search input{width:100%;padding:14px 17px 14px 45px;border:1px solid var(--line);border-radius:15px;background:var(--paper);font:inherit;outline:none}
-.search input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(40,91,73,.1)}
-.search:before{content:"⌕";position:absolute;left:16px;top:7px;font-size:1.7rem;color:var(--muted)}
-select{padding:13px 40px 13px 15px;border:1px solid var(--line);border-radius:15px;background:var(--paper);font:inherit;color:var(--ink)}
-.chips{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:24px}
-.chip{border:1px solid var(--line);background:var(--paper);padding:9px 15px;border-radius:99px;font-weight:700;color:var(--muted);cursor:pointer}
-.chip.active,.chip:hover{background:var(--green);color:white;border-color:var(--green)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:19px}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:0 5px 20px rgba(39,67,54,.035);transition:.22s ease}
-.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
-.cover{height:180px;border-radius:15px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.cover:before,.cover:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.4);border-radius:50%;width:190px;height:190px}
-.cover:after{width:130px;height:130px}
-.cover span{font-size:3.6rem;z-index:1;filter:drop-shadow(0 8px 7px rgba(0,0,0,.12))}
-.cover.peach{background:#f2d4c5}.cover.green{background:#c9dfcf}.cover.yellow{background:#f1e3ae}
-.cover.blue{background:#c9dce6}.cover.lilac{background:#ded4ec}.cover.rose{background:#edcbd1}
-.card-body{padding:15px 5px 5px}
-.meta{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:.78rem;font-weight:700}
-.tag{background:var(--mint);color:var(--green);padding:5px 9px;border-radius:99px}
-.card h3{font-family:Georgia,serif;font-size:1.35rem;line-height:1.2;margin:12px 0 7px}
-.card p{color:var(--muted);font-size:.9rem;margin:0 0 15px;min-height:44px}
-.card-bottom{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:12px}
-.age{font-size:.8rem;color:var(--muted)}
-.read{color:var(--green);font-weight:800;text-decoration:none;font-size:.88rem}
-.read:hover{text-decoration:underline}
-.empty{display:none;padding:30px;text-align:center;color:var(--muted);background:var(--paper);border-radius:18px}
-.feature-band{background:var(--green);color:white;border-radius:28px;padding:35px 38px;display:grid;grid-template-columns:1fr 1fr;gap:25px;align-items:center;margin:0 0 75px}
-.feature-band h2{font-size:2rem;line-height:1.15;letter-spacing:-1px;margin:0 0 10px}
-.feature-band p{color:#d9e9df;margin:0;max-width:470px}
-.feature-points{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.point{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:14px;border-radius:15px;font-size:.9rem}
-.point strong{display:block;font-size:1rem;margin-bottom:3px}
-footer{background:#203b31;color:#d9e9df;padding:30px 24px}
-.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:.88rem}
-footer strong{color:white}
-@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:48px}.hero-art{min-height:300px}.grid{grid-template-columns:repeat(2,1fr)}.feature-band{grid-template-columns:1fr}}
-@media(max-width:560px){.nav{padding:13px 18px}.navlinks{gap:12px}.navlinks a:not(.nav-cta){display:none}main{padding:0 18px}.hero{padding:42px 0 35px;gap:12px}h1{letter-spacing:-2px}.hero-art{min-height:250px}.blob{height:240px}.book-stack{transform:scale(.8)}.section-head{display:block}.section-head h2{font-size:1.7rem}.grid{grid-template-columns:1fr 1fr;gap:10px}.cover{height:135px}.cover span{font-size:2.7rem}.card{padding:9px;border-radius:17px}.card-body{padding:11px 3px 3px}.card h3{font-size:1.08rem}.card p{font-size:.82rem;min-height:60px}.meta{font-size:.68rem}.tag{padding:4px 7px}.read{font-size:.78rem}.feature-band{padding:25px 20px}.feature-points{grid-template-columns:1fr 1fr}.point{font-size:.8rem;padding:11px}}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+button, input, select { font: inherit; }
+
+a { color: inherit; }
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(251,248,241,.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav {
+  max-width: 1160px;
+  margin: auto;
+  padding: 15px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-size: 21px;
+  font-weight: 850;
+  color: var(--green);
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: var(--green);
+  color: white;
+  border-radius: 13px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.nav-links a:hover { color: var(--green); }
+
+.nav-links .nav-button {
+  background: var(--green);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 30px;
+}
+
+main {
+  max-width: 1160px;
+  margin: auto;
+  padding: 0 24px;
+}
+
+.hero {
+  padding: 68px 0 55px;
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 35px;
+  align-items: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  background: var(--mint);
+  color: var(--green);
+  border-radius: 30px;
+  padding: 7px 13px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: clamp(42px, 5.5vw, 68px);
+  line-height: 1.04;
+  letter-spacing: -2.5px;
+  margin: 20px 0;
+}
+
+.hero h1 span {
+  color: var(--green);
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.hero p {
+  max-width: 540px;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.primary-button, .secondary-button {
+  display: inline-block;
+  padding: 13px 20px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 750;
+  margin: 10px 8px 0 0;
+}
+
+.primary-button {
+  background: var(--green);
+  color: white;
+}
+
+.secondary-button {
+  border: 1px solid var(--green);
+  color: var(--green);
+}
+
+.hero-art {
+  min-height: 330px;
+  background: var(--mint);
+  border-radius: 48% 52% 43% 57%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transform: rotate(-3deg);
+}
+
+.book-stack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(3deg);
+  font-size: 92px;
+}
+
+.book-stack span {
+  margin: -12px;
+  filter: drop-shadow(0 10px 7px rgba(0,0,0,.13));
+}
+
+.section {
+  padding: 45px 0 65px;
+  scroll-margin-top: 85px;
+}
+
+.section-heading {
+  margin-bottom: 23px;
+}
+
+.section-heading h2 {
+  font-size: 34px;
+  letter-spacing: -1px;
+  margin: 10px 0 5px;
+}
+
+.section-heading p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0 16px;
+  flex-wrap: wrap;
+}
+
+.search-wrap {
+  flex: 1;
+  min-width: 220px;
+}
+
+.search-wrap input, .toolbar select {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--white);
+  outline: none;
+}
+
+.search-wrap input:focus, .toolbar select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(40,91,73,.1);
+}
+
+.toolbar select {
+  width: auto;
+  min-width: 175px;
+  color: var(--ink);
+}
+
+.filters {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: 17px 0 25px;
+}
+
+.filter-button {
+  padding: 9px 15px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--muted);
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.filter-button.active, .filter-button:hover {
+  background: var(--green);
+  color: white;
+  border-color: var(--green);
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 19px;
+}
+
+.book-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  padding: 13px;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(39,67,54,.035);
+  transition: .2s;
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+}
+
+.book-cover {
+  height: 165px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 62px;
+}
+
+.peach { background: #f2d4c5; }
+.blue { background: #c9dce6; }
+.yellow { background: #f1e3ae; }
+.lilac { background: #ded4ec; }
+.green { background: #c9dfcf; }
+.rose { background: #edcbd1; }
+
+.book-info { padding: 13px 4px 4px; }
+
+.book-tag {
+  display: inline-block;
+  background: var(--mint);
+  color: var(--green);
+  padding: 4px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.book-info h3 {
+  font-family: Georgia, serif;
+  font-size: 21px;
+  margin: 10px 0 5px;
+  line-height: 1.25;
+}
+
+.book-info p {
+  color: var(--muted);
+  font-size: 13px;
+  min-height: 43px;
+  margin: 5px 0 12px;
+}
+
+.book-meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.detail-button {
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0;
+}
+
+.detail-button:hover { text-decoration: underline; }
+
+.no-results {
+  display: none;
+  text-align: center;
+  color: var(--muted);
+  padding: 30px;
+  background: var(--white);
+  border-radius: 15px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(20,35,29,.65);
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: var(--white);
+  border-radius: 22px;
+  padding: 28px;
+  width: min(100%, 520px);
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 13px;
+  right: 16px;
+  border: 0;
+  background: var(--mint);
+  color: var(--green);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modal-content h2 { font-family: Georgia, serif; }
+
+.source-button {
+  display: inline-block;
+  background: var(--green);
+  color: white;
+  padding: 11px 17px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 750;
+  margin-top: 12px;
+}
+
+.info-band {
+  background: var(--green);
+  color: white;
+  border-radius: 25px;
+  padding: 34px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  align-items: center;
+  margin: 25px 0 65px;
+}
+
+.info-band h2 {
+  font-size: 30px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+
+.info-band p { color: #d9e9df; }
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.info-item {
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 13px;
+}
+
+.info-item strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.guide-grid, .contributor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 17px;
+}
+
+.guide-card, .contributor-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  padding: 22px;
+  border-radius: 18px;
+}
+
+.guide-card h3, .contributor-card h3 { margin-top: 0; }
+
+.guide-card p, .contributor-card p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.guide-icon {
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+
+.contributor-card { text-align: center; }
+
+.contributor-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--mint);
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+  margin: 0 auto 12px;
+}
+
+footer {
+  background: var(--green-dark);
+  color: #d9e9df;
+  padding: 30px 24px;
+}
+
+.footer-inner {
+  max-width: 1160px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 13px;
+}
+
+footer strong { color: white; }
+
+@media(max-width: 800px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-art { min-height: 250px; }
+  .book-grid { grid-template-columns: repeat(2, 1fr); }
+  .info-band { grid-template-columns: 1fr; }
+}
+
+@media(max-width: 560px) {
+  main { padding: 0 17px; }
+  .nav { padding: 12px 17px; }
+  .nav-links { gap: 12px; }
+  .nav-links a { font-size: 12px; }
+  .nav-links a:nth-child(2) { display: none; }
+  .hero { padding: 43px 0 35px; }
+  .hero h1 { letter-spacing: -1.5px; }
+  .hero-art { min-height: 210px; }
+  .book-stack { font-size: 68px; }
+  .section-heading h2 { font-size: 28px; }
+  .book-grid { gap: 10px; }
+  .book-card { padding: 9px; border-radius: 15px; }
+  .book-cover { height: 125px; font-size: 45px; }
+  .book-info h3 { font-size: 17px; }
+  .book-info p { font-size: 12px; min-height: 58px; }
+  .book-meta { font-size: 10px; }
+  .guide-grid, .contributor-grid { grid-template-columns: 1fr; }
+  .info-band { padding: 24px 19px; }
+  .info-grid { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
+
 <body>
+
 <header>
   <nav class="nav">
-    <a class="brand" href="#"><span class="logo">📖</span> ruang<span style="color:#557e69">baca.</span></a>
-    <div class="navlinks">
-      <a href="#katalog">Jelajahi</a><a href="#tentang">Tentang</a><a class="nav-cta" href="#katalog">Mulai membaca</a>
+    <a href="#beranda" class="brand">
+      <span class="brand-icon">📖</span>
+      Ruang Baca.
+    </a>
+    <div class="nav-links">
+      <a href="#katalog">Katalog</a>
+      <a href="#panduan">Panduan</a>
+      <a href="#kontributor">Kontributor</a>
+      <a href="#katalog" class="nav-button">Mulai membaca</a>
     </div>
   </nav>
 </header>
+
 <main>
-  <section class="hero">
-    <div>
-      <span class="eyebrow">✦ Perpustakaan cerita digital</span>
-      <h1>Setiap cerita punya <span>dunia</span> untuk dijelajahi.</h1>
-      <p>Temukan cerita pilihan, dongeng, dan bacaan pengetahuan yang membuka ruang imajinasi. Pilih cerita yang sesuai dengan usiamu, lalu lanjutkan membaca dari sumber aslinya.</p>
-      <div class="hero-actions"><a class="btn primary" href="#katalog">Jelajahi koleksi ↗</a><a class="btn secondary" href="#tentang">Kenali Ruang Baca</a></div>
-    </div>
-    <div class="hero-art" aria-label="Ilustrasi tumpukan buku">
-      <div class="blob"></div><span class="spark s1">✦</span><span class="spark s2">✳</span><span class="spark s3">✧</span>
-      <div class="book-stack"><div class="book one"><b>Petualangan<br>di Hutan</b><small>Kumpulan cerita</small></div><div class="book two"><b>Alam dan<br>Keajaiban</b><small>Seri pengetahuan</small></div><div class="book three"><b>Dunia<br>Dongeng</b><small>Ruang Baca</small></div></div>
-    </div>
-  </section>
 
-  <section class="catalog" id="katalog">
-    <div class="section-head"><div><span class="eyebrow">Koleksi pilihan</span><h2>Temukan bacaanmu</h2><p>Jelajahi cerita berdasarkan judul, kategori, atau kelompok usia.</p></div></div>
-    <div class="toolbar">
-      <div class="search"><input id="search" type="search" placeholder="Cari judul atau ringkasan cerita..." aria-label="Cari bacaan"></div>
-      <select id="age" aria-label="Pilih kelompok usia"><option value="">Semua usia</option><option value="3–8 tahun">Usia 3–8 tahun</option><option value="9–12 tahun">Usia 9–12 tahun</option><option value="13–17 tahun">Usia 13–17 tahun</option></select>
-    </div>
-    <div class="chips" aria-label="Filter kategori">
-      <button class="chip active" data-category="Semua">Semua koleksi</button>
-      <button class="chip" data-category="Dongeng">Dongeng</button>
-      <button class="chip" data-category="Cerita rakyat">Cerita rakyat</button>
-      <button class="chip" data-category="Sains & alam">Sains & alam</button>
-      <button class="chip" data-category="Kehidupan sehari-hari">Kehidupan sehari-hari</button>
-    </div>
-    <div class="grid" id="bookGrid">
-      <article class="card" data-title="Kancil dan Buaya" data-category="Cerita rakyat" data-age="3–8 tahun">
-        <div class="cover peach"><span>🦊</span></div><div class="card-body"><div class="meta"><span class="tag">Cerita rakyat</span><span>Indonesia</span></div><h3>Kancil dan Buaya</h3><p>Kisah tentang kecerdikan, keberanian, dan berpikir sebelum bertindak.</p><div class="card-bottom"><span class="age">Usia 3–8 tahun</span><a class="read" href="https://id.wikisource.org/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
-      </article>
-      <article class="card" data-title="Asal Usul Danau Toba" data-category="Cerita rakyat" data-age="9–12 tahun">
-        <div class="cover blue"><span>🏞️</span></div><div class="card-body"><div class="meta"><span class="tag">Cerita rakyat</span><span>Sumatra</span></div><h3>Asal Usul Danau Toba</h3><p>Cerita rakyat yang mengajak pembaca mengenal legenda dari Sumatra Utara.</p><div class="card-bottom"><span class="age">Usia 9–12 tahun</span><a class="read" href="https://id.wikisource.org/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
-      </article>
-      <article class="card" data-title="Mengapa Langit Berwarna Biru?" data-category="Sains & alam" data-age="9–12 tahun">
-        <div class="cover yellow"><span>☀️</span></div><div class="card-body"><div class="meta"><span class="tag">Sains & alam</span><span>Pengetahuan</span></div><h3>Mengapa Langit Biru?</h3><p>Kenali fenomena alam sederhana melalui pertanyaan yang dekat dengan keseharian.</p><div class="card-bottom"><span class="age">Usia 9–12 tahun</span><a class="read" href="https://badanbahasa.kemdikbud.go.id/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
-      </article>
-      <article class="card" data-title="Putri dan Bintang Kecil" data-category="Dongeng" data-age="3–8 tahun">
-        <div class="cover lilac"><span>⭐</span></div><div class="card-body"><div class="meta"><span class="tag">Dongeng</span><span>Fantasi</span></div><h3>Putri dan Bintang Kecil</h3><p>Dongeng imajinatif tentang rasa ingin tahu dan persahabatan.</p><div class="card-bottom"><span class="age">Usia 3–8 tahun</span><a class="read" href="https://www.gutenberg.org/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
-      </article>
-      <article class="card" data-title="Hari Pertama di Sekolah" data-category="Kehidupan sehari-hari" data-age="9–12 tahun">
-        <div class="cover green"><span>🎒</span></div><div class="card-body"><div class="meta"><span class="tag">Kehidupan sehari-hari</span><span>Persahabatan</span></div><h3>Hari Pertama di Sekolah</h3><p>Cerita tentang beradaptasi, bertemu teman baru, dan saling menghargai.</p><div class="card-bottom"><span class="age">Usia 9–12 tahun</span><a class="read" href="https://literacycloud.org/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
-      </article>
-      <article class="card" data-title="Misi Menjaga Bumi" data-category="Sains & alam" data-age="13–17 tahun">
-        <div class="cover rose"><span>🌱</span></div><div class="card-body"><div class="meta"><span class="tag">Sains & alam</span><span>Lingkungan</span></div><h3>Misi Menjaga Bumi</h3><p>Kenali langkah sederhana untuk menjaga lingkungan dan mengurangi sampah.</p><div class="card-bottom"><span class="age">Usia 13–17 tahun</span><a class="read" href="https://www.unep.org/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
-      </article>
-    </div>
-    <div class="empty" id="empty">Belum ada bacaan yang cocok. Coba kata kunci atau filter lain.</div>
-  </section>
+<!-- BERANDA -->
+<section class="hero" id="beranda">
+  <div>
+    <span class="eyebrow">✦ Perpustakaan cerita digital</span>
+    <h1>Setiap cerita punya <span>dunia</span> untuk dijelajahi.</h1>
+    <p>
+      Temukan dongeng, cerita rakyat, kisah keseharian,
+      dan bacaan pengetahuan. Pilih bacaan sesuai usia
+      dan temukan sumber aslinya.
+    </p>
+    <a href="#katalog" class="primary-button">Jelajahi koleksi ↗</a>
+    <a href="#panduan" class="secondary-button">Lihat panduan</a>
+  </div>
 
-  <section class="feature-band" id="tentang">
-    <div><h2>Ruang yang ramah untuk tumbuh dan berimajinasi.</h2><p>Ruang Baca dirancang sebagai katalog bacaan digital yang ringan, mudah dijelajahi, dan dapat diakses tanpa membuat akun.</p></div>
-    <div class="feature-points">
-      <div class="point"><strong>♡ Mudah diakses</strong>Tanpa akun dan tanpa iklan.</div>
-      <div class="point"><strong>⌕ Mudah ditemukan</strong>Filter berdasarkan usia dan kategori.</div>
-      <div class="point"><strong>↗ Sumber jelas</strong>Arahkan pembaca ke sumber asli.</div>
-      <div class="point"><strong>▣ Ramah perangkat</strong>Tampilan menyesuaikan HP dan laptop.</div>
+  <div class="hero-art" aria-label="Ilustrasi buku">
+    <div class="book-stack">
+      <span>📕</span>
+      <span>📗</span>
+      <span>📘</span>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- KATALOG -->
+<section class="section" id="katalog">
+  <div class="section-heading">
+    <span class="eyebrow">Koleksi pilihan</span>
+    <h2>Temukan bacaanmu</h2>
+    <p>Jelajahi koleksi berdasarkan judul, kategori, dan kelompok usia.</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <input id="searchInput" type="search"
+        placeholder="Cari judul atau kata kunci..."
+        aria-label="Cari bacaan">
+    </div>
+
+    <select id="ageFilter" aria-label="Filter usia">
+      <option value="Semua">Semua usia</option>
+      <option value="3–8 tahun">Usia 3–8 tahun</option>
+      <option value="9–12 tahun">Usia 9–12 tahun</option>
+      <option value="13–17 tahun">Usia 13–17 tahun</option>
+    </select>
+  </div>
+
+  <div class="filters">
+    <button class="filter-button active" data-category="Semua">Semua koleksi</button>
+    <button class="filter-button" data-category="Dongeng">Dongeng</button>
+    <button class="filter-button" data-category="Cerita rakyat">Cerita rakyat</button>
+    <button class="filter-button" data-category="Kehidupan sehari-hari">Kehidupan sehari-hari</button>
+    <button class="filter-button" data-category="Sains dan alam">Sains & alam</button>
+  </div>
+
+  <div class="book-grid" id="bookGrid">
+
+    <article class="book-card"
+      data-title="Kancil dan Buaya"
+      data-category="Cerita rakyat"
+      data-age="3–8 tahun">
+      <div class="book-cover peach">🦊</div>
+      <div class="book-info">
+        <span class="book-tag">Cerita rakyat</span>
+        <h3>Kancil dan Buaya</h3>
+        <p>Kisah kecerdikan Kancil dalam menghadapi tantangan.</p>
+        <div class="book-meta">Usia 3–8 tahun · Bahasa Indonesia</div>
+        <button class="detail-button"
+          onclick="showDetail('Kancil dan Buaya','Cerita rakyat','3–8 tahun','Kisah tentang kecerdikan, keberanian, dan berpikir sebelum bertindak.','https://id.wikisource.org/')">
+          Lihat detail →
+        </button>
+      </div>
+    </article>
+
+    <article class="book-card"
+      data-title="Asal Usul Danau Toba"
+      data-category="Cerita rakyat"
+      data-age="9–12 tahun">
+      <div class="book-cover blue">🏞️</div>
+      <div class="book-info">
+        <span class="book-tag">Cerita rakyat</span>
+        <h3>Asal Usul Danau Toba</h3>
+        <p>Legenda yang berasal dari Sumatra Utara.</p>
+        <div class="book-meta">Usia 9–12 tahun · Bahasa Indonesia</div>
+        <button class="detail-button"
+          onclick="showDetail('Asal Usul Danau Toba','Cerita rakyat','9–12 tahun','Cerita rakyat yang memperkenalkan legenda dan nilai budaya dari Sumatra Utara.','https://id.wikisource.org/')">
+          Lihat detail →
+        </button>
+      </div>
+    </article>
+
+    <article class="book-card"
+      data-title="Mengapa Langit Berwarna Biru"
+      data-category="Sains dan alam"
+      data-age="9–12 tahun">
+      <div class="book-cover yellow">☀️</div>
+      <div class="book-info">
+        <span class="book-tag">Sains & alam</span>
+        <h3>Mengapa Langit Biru?</h3>
+        <p>Mengenal fenomena alam melalui pertanyaan sederhana.</p>
+        <div class="book-meta">Usia 9–12 tahun · Bahasa Indonesia</div>
+        <button class="detail-button"
+          onclick="showDetail('Mengapa Langit Biru?','Sains dan alam','9–12 tahun','Bacaan pengenalan tentang fenomena cahaya dan warna langit.','https://badanbahasa.kemdikbud.go.id/')">
+          Lihat detail →
+        </button>
+      </div>
+    </article>
+
+    <article class="book-card"
+      data-title="Putri dan Bintang Kecil"
+      data-category="Dongeng"
+      data-age="3–8 tahun">
+      <div class="book-cover lilac">⭐</div>
+      <div class="book-info">
+        <span class="book-tag">Dongeng</span>
+        <h3>Putri dan Bintang Kecil</h3>
+        <p>Dongeng imajinatif tentang rasa ingin tahu dan persahabatan.</p>
+        <div class="book-meta">Usia 3–8 tahun · Bahasa Indonesia</div>
+        <button class="detail-button"
+          onclick="showDetail('Putri dan Bintang Kecil','Dongeng','3–8 tahun','Contoh ringkasan dongeng tentang persahabatan dan rasa ingin tahu.','https://www.gutenberg.org/')">
+          Lihat detail →
+        </button>
+      </div>
+    </article>
+
+    <article class="book-card"
+      data-title="Hari Pertama di Sekolah"
+      data-category="Kehidupan sehari-hari"
+      data-age="9–12 tahun">
+      <div class="book-cover green">🎒</div>
+      <div class="book-info">
+        <span class="book-tag">Kehidupan sehari-hari</span>
+        <h3>Hari Pertama di Sekolah</h3>
+        <p>Cerita tentang beradaptasi dan bertemu teman baru.</p>
+        <div class="book-meta">Usia 9–12 tahun · Bahasa Indonesia</div>
+        <button class="detail-button"
+          onclick="showDetail('Hari Pertama di Sekolah','Kehidupan sehari-hari','9–12 tahun','Contoh ringkasan cerita tentang keberanian, adaptasi, dan persahabatan.','https://literacycloud.org/')">
+          Lihat detail →
+        </button>
+      </div>
+    </article>
+
+    <article class="book-card"
+      data-title="Misi Menjaga Bumi"
+      data-category="Sains dan alam"
+      data-age="13–17 tahun">
+      <div class="book-cover rose">🌱</div>
+      <div class="book-info">
+        <span class="book-tag">Sains & alam</span>
+        <h3>Misi Menjaga Bumi</h3>
+        <p>Mengenal langkah sederhana untuk menjaga lingkungan.</p>
+        <div class="book-meta">Usia 13–17 tahun · Bahasa Indonesia</div>
+        <button class="detail-button"
+          onclick="showDetail('Misi Menjaga Bumi','Sains dan alam','13–17 tahun','Contoh ringkasan bacaan tentang lingkungan dan upaya menjaga bumi.','https://www.unep.org/')">
+          Lihat detail →
+        </button>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="no-results" id="noResults">
+    Bacaan tidak ditemukan. Coba kata kunci atau filter lain.
+  </div>
+</section>
+
+<!-- DETAIL BACaan -->
+<div class="modal" id="detailModal" role="dialog"
+  aria-modal="true" aria-labelledby="detailTitle">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeDetail()" aria-label="Tutup">×</button>
+    <span class="eyebrow">Informasi bacaan</span>
+    <h2 id="detailTitle"></h2>
+    <p><strong>Kategori:</strong> <span id="detailCategory"></span></p>
+    <p><strong>Kelompok usia:</strong> <span id="detailAge"></span></p>
+    <p id="detailAbstract"></p>
+    <p><strong>Sumber:</strong> Tautan sumber bacaan</p>
+    <a id="detailSource" class="source-button"
+      href="#" target="_blank" rel="noopener noreferrer">
+      Baca di Sumber Asli ↗
+    </a>
+    <p style="font-size:12px;color:#687a72;margin-top:15px">
+      Periksa ketersediaan, kesesuaian isi, dan ketentuan lisensi
+      sumber sebelum koleksi dipublikasikan.
+    </p>
+  </div>
+</div>
+
+<!-- INFORMASI -->
+<section class="info-band">
+  <div>
+    <h2>Ruang yang ramah untuk tumbuh dan berimajinasi.</h2>
+    <p>
+      Ruang Baca merupakan konsep katalog bacaan digital
+      yang membantu pembaca menemukan bacaan sesuai usia
+      dan minat, serta mengakses sumber aslinya.
+    </p>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-item">
+      <strong>♡ Mudah diakses</strong>
+      Tanpa akun dan tanpa iklan.
+    </div>
+    <div class="info-item">
+      <strong>⌕ Mudah ditemukan</strong>
+      Pencarian dan filter koleksi.
+    </div>
+    <div class="info-item">
+      <strong>↗ Sumber bacaan</strong>
+      Tautan menuju sumber asli.
+    </div>
+    <div class="info-item">
+      <strong>▣ Responsif</strong>
+      Menyesuaikan layar HP dan laptop.
+    </div>
+  </div>
+</section>
+
+<!-- PANDUAN -->
+<section class="section" id="panduan">
+  <div class="section-heading">
+    <span class="eyebrow">Untuk pendamping membaca</span>
+    <h2>Panduan orang tua dan guru</h2>
+    <p>Beberapa hal yang dapat diperhatikan saat memilih bacaan.</p>
+  </div>
+
+  <div class="guide-grid">
+    <div class="guide-card">
+      <div class="guide-icon">👨‍👩‍👧</div>
+      <h3>Untuk orang tua</h3>
+      <p>
+        Pilih bacaan sesuai usia dan minat anak.
+        Dampingi anak saat menemukan istilah atau
+        cerita yang belum dipahami.
+      </p>
+    </div>
+
+    <div class="guide-card">
+      <div class="guide-icon">👩‍🏫</div>
+      <h3>Untuk guru</h3>
+      <p>
+        Gunakan bacaan sebagai bahan pendamping kegiatan
+        belajar. Sesuaikan pilihan cerita dengan tujuan
+        pembelajaran dan kebutuhan peserta didik.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- KONTRIBUTOR -->
+<section class="section" id="kontributor">
+  <div class="section-heading">
+    <span class="eyebrow">Di balik Ruang Baca</span>
+    <h2>Kontributor</h2>
+    <p>Ruang Baca dikembangkan melalui kerja sama tim.</p>
+  </div>
+
+  <div class="contributor-grid">
+    <div class="contributor-card">
+      <div class="contributor-icon">📚</div>
+      <h3>Tim Riset</h3>
+      <p>Menyiapkan kebutuhan pengguna, kategori, dan kurasi bacaan.</p>
+    </div>
+
+    <div class="contributor-card">
+      <div class="contributor-icon">💻</div>
+      <h3>Tim Pengembangan</h3>
+      <p>Mengembangkan tampilan dan fitur website.</p>
+    </div>
+  </div>
+</section>
+
 </main>
-<footer><div class="footer-inner"><div><strong>ruangbaca.</strong> — Cerita untuk setiap imajinasi.</div><div>Contoh tampilan / demo pengembangan Open Library</div></div></footer>
+
+<footer>
+  <div class="footer-inner">
+    <div><strong>Ruang Baca.</strong> — Cerita untuk setiap imajinasi.</div>
+    <div>Contoh pengembangan Open Library · 2026</div>
+  </div>
+</footer>
+
 <script>
-const searchInput=document.getElementById('search');
-const ageSelect=document.getElementById('age');
-const cards=[...document.querySelectorAll('.card')];
-const chips=[...document.querySelectorAll('.chip')];
-let activeCategory='Semua';
-function filterBooks(){
-  const term=searchInput.value.toLowerCase().trim();
-  const age=ageSelect.value;
-  let shown=0;
-  cards.forEach(card=>{
-    const matchesText=(card.dataset.title+' '+card.innerText).toLowerCase().includes(term);
-    const matchesAge=!age||card.dataset.age===age;
-    const matchesCategory=activeCategory==='Semua'||card.dataset.category===activeCategory;
-    const visible=matchesText&&matchesAge&&matchesCategory;
-    card.style.display=visible?'':'none';
-    if(visible)shown++;
+const searchInput = document.getElementById("searchInput");
+const ageFilter = document.getElementById("ageFilter");
+const cards = document.querySelectorAll(".book-card");
+const filterButtons = document.querySelectorAll(".filter-button");
+
+let selectedCategory = "Semua";
+
+function filterBooks() {
+  const keyword = searchInput.value.toLowerCase().trim();
+  const selectedAge = ageFilter.value;
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const title = card.innerText.toLowerCase();
+    const category = card.dataset.category;
+    const age = card.dataset.age;
+
+    const matchesKeyword = title.includes(keyword);
+    const matchesAge = selectedAge === "Semua" || age === selectedAge;
+    const matchesCategory =
+      selectedCategory === "Semua" || category === selectedCategory;
+
+    const visible = matchesKeyword && matchesAge && matchesCategory;
+
+    card.style.display = visible ? "" : "none";
+
+    if (visible) visibleCount++;
   });
-  document.getElementById('empty').style.display=shown?'none':'block';
+
+  document.getElementById("noResults").style.display =
+    visibleCount === 0 ? "block" : "none";
 }
-searchInput.addEventListener('input',filterBooks);
-ageSelect.addEventListener('change',filterBooks);
-chips.forEach(chip=>chip.addEventListener('click',()=>{
-  chips.forEach(item=>item.classList.remove('active'));
-  chip.classList.add('active');
-  activeCategory=chip.dataset.category;
-  filterBooks();
-}));
+
+searchInput.addEventListener("input", filterBooks);
+ageFilter.addEventListener("change", filterBooks);
+
+filterButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    filterButtons.forEach(item => item.classList.remove("active"));
+    button.classList.add("active");
+
+    selectedCategory = button.dataset.category;
+    filterBooks();
+  });
+});
+
+function showDetail(title, category, age, abstract, source) {
+  document.getElementById("detailTitle").textContent = title;
+  document.getElementById("detailCategory").textContent = category;
+  document.getElementById("detailAge").textContent = age;
+  document.getElementById("detailAbstract").textContent = abstract;
+  document.getElementById("detailSource").href = source;
+
+  document.getElementById("detailModal").style.display = "flex";
+}
+
+function closeDetail() {
+  document.getElementById("detailModal").style.display = "none";
+}
+
+document.getElementById("detailModal").addEventListener("click", event => {
+  if (event.target.id === "detailModal") {
+    closeDetail();
+  }
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeDetail();
+});
 </script>
+
 </body>
 </html>
