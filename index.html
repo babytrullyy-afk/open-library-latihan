@@ -1,151 +1,191 @@
-from pathlib import Path
-import zipfile
-
-base = Path("/mnt/data/open_library_latihan")
-base.mkdir(exist_ok=True)
-
-html = """<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Open Library - Latihan Hosting</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.6;
-      color: #203040;
-      background: #f5f8fb;
-    }
-    header {
-      padding: 28px 18px;
-      text-align: center;
-      color: white;
-      background: #155b7a;
-    }
-    header h1 { margin: 0 0 6px; font-size: 2rem; }
-    header p { margin: 0; }
-    main { width: min(920px, 92%); margin: 28px auto; }
-    .intro {
-      padding: 18px;
-      margin-bottom: 20px;
-      background: white;
-      border-radius: 12px;
-    }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 16px;
-    }
-    article {
-      padding: 18px;
-      background: white;
-      border: 1px solid #dce6ed;
-      border-radius: 12px;
-    }
-    article h2 { margin-top: 0; color: #155b7a; font-size: 1.15rem; }
-    .tag {
-      display: inline-block;
-      padding: 3px 9px;
-      border-radius: 20px;
-      background: #e6f2f7;
-      color: #155b7a;
-      font-size: .85rem;
-    }
-    a { color: #075985; }
-    footer {
-      padding: 18px;
-      text-align: center;
-      color: #526575;
-      font-size: .9rem;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Ruang Baca — katalog bacaan anak yang menyenangkan, ringan, dan mudah diakses.">
+<title>Ruang Baca — Cerita untuk Setiap Imajinasi</title>
+<style>
+:root{
+  --ink:#20332d;--muted:#687a72;--cream:#fbf8f1;--paper:#fffdf8;
+  --green:#285b49;--mint:#dceee4;--orange:#f1a45b;--pink:#f6dfd8;
+  --yellow:#f5e8b8;--line:#e9e5da;--shadow:0 16px 45px rgba(39,67,54,.09);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:ui-rounded,"Segoe UI",Arial,sans-serif;line-height:1.55}
+a{color:inherit}
+header{position:sticky;top:0;z-index:10;background:rgba(251,248,241,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(233,229,218,.8)}
+.nav{max-width:1160px;margin:auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:850;font-size:1.2rem;letter-spacing:-.5px}
+.logo{width:38px;height:38px;border-radius:13px;background:var(--green);display:grid;place-items:center;color:white;font-size:20px}
+.navlinks{display:flex;gap:25px;align-items:center}
+.navlinks a{text-decoration:none;color:var(--muted);font-size:.92rem;font-weight:650}
+.navlinks a:hover{color:var(--green)}
+.nav-cta{background:var(--green);color:white!important;padding:10px 16px;border-radius:999px}
+main{max-width:1160px;margin:auto;padding:0 24px}
+.hero{padding:64px 0 54px;display:grid;grid-template-columns:1.08fr .92fr;gap:38px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--green);background:var(--mint);border-radius:99px;padding:7px 13px;font-size:.78rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+h1{font-size:clamp(2.65rem,5.4vw,4.8rem);line-height:1.02;letter-spacing:-3px;margin:20px 0 18px;max-width:650px}
+h1 span{color:var(--green);font-family:Georgia,serif;font-style:italic;font-weight:500}
+.hero p{color:var(--muted);font-size:1.08rem;max-width:530px;margin:0 0 26px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 19px;border-radius:999px;text-decoration:none;font-weight:750;border:1px solid var(--green)}
+.btn.primary{background:var(--green);color:white}
+.btn.secondary{color:var(--green);background:transparent}
+.hero-art{min-height:360px;position:relative;display:grid;place-items:center}
+.blob{position:absolute;width:min(100%,430px);height:330px;border-radius:48% 52% 42% 58%/55% 42% 58% 45%;background:var(--mint);transform:rotate(-7deg)}
+.book-stack{position:relative;width:280px;height:260px;display:flex;align-items:end;justify-content:center;filter:drop-shadow(0 18px 15px rgba(32,51,45,.14))}
+.book{position:absolute;width:145px;height:205px;border-radius:9px 16px 16px 9px;border-left:8px solid rgba(0,0,0,.1);box-shadow:inset 8px 0 rgba(255,255,255,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:15px;color:#fff}
+.book b{font-family:Georgia,serif;font-size:1.35rem;line-height:1.1}
+.book small{margin-top:12px;opacity:.85}
+.book.one{background:#d47b54;transform:rotate(-13deg) translate(-66px,7px)}
+.book.two{background:#557e69;transform:rotate(8deg) translate(52px,-5px)}
+.book.three{background:#d7aa4e;transform:rotate(-1deg) translate(-4px,-25px);z-index:2;color:#3d3829}
+.spark{position:absolute;font-size:2rem}.s1{top:20px;right:45px}.s2{bottom:24px;left:40px}.s3{top:75px;left:10px;font-size:1.4rem}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:18px 0 22px}
+.section-head h2{font-size:2rem;letter-spacing:-1px;margin:0}
+.section-head p{color:var(--muted);margin:5px 0 0}
+.catalog{padding:20px 0 76px}
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}
+.search{flex:1;min-width:220px;position:relative}
+.search input{width:100%;padding:14px 17px 14px 45px;border:1px solid var(--line);border-radius:15px;background:var(--paper);font:inherit;outline:none}
+.search input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(40,91,73,.1)}
+.search:before{content:"⌕";position:absolute;left:16px;top:7px;font-size:1.7rem;color:var(--muted)}
+select{padding:13px 40px 13px 15px;border:1px solid var(--line);border-radius:15px;background:var(--paper);font:inherit;color:var(--ink)}
+.chips{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:24px}
+.chip{border:1px solid var(--line);background:var(--paper);padding:9px 15px;border-radius:99px;font-weight:700;color:var(--muted);cursor:pointer}
+.chip.active,.chip:hover{background:var(--green);color:white;border-color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:19px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:0 5px 20px rgba(39,67,54,.035);transition:.22s ease}
+.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.cover{height:180px;border-radius:15px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.cover:before,.cover:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.4);border-radius:50%;width:190px;height:190px}
+.cover:after{width:130px;height:130px}
+.cover span{font-size:3.6rem;z-index:1;filter:drop-shadow(0 8px 7px rgba(0,0,0,.12))}
+.cover.peach{background:#f2d4c5}.cover.green{background:#c9dfcf}.cover.yellow{background:#f1e3ae}
+.cover.blue{background:#c9dce6}.cover.lilac{background:#ded4ec}.cover.rose{background:#edcbd1}
+.card-body{padding:15px 5px 5px}
+.meta{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:.78rem;font-weight:700}
+.tag{background:var(--mint);color:var(--green);padding:5px 9px;border-radius:99px}
+.card h3{font-family:Georgia,serif;font-size:1.35rem;line-height:1.2;margin:12px 0 7px}
+.card p{color:var(--muted);font-size:.9rem;margin:0 0 15px;min-height:44px}
+.card-bottom{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:12px}
+.age{font-size:.8rem;color:var(--muted)}
+.read{color:var(--green);font-weight:800;text-decoration:none;font-size:.88rem}
+.read:hover{text-decoration:underline}
+.empty{display:none;padding:30px;text-align:center;color:var(--muted);background:var(--paper);border-radius:18px}
+.feature-band{background:var(--green);color:white;border-radius:28px;padding:35px 38px;display:grid;grid-template-columns:1fr 1fr;gap:25px;align-items:center;margin:0 0 75px}
+.feature-band h2{font-size:2rem;line-height:1.15;letter-spacing:-1px;margin:0 0 10px}
+.feature-band p{color:#d9e9df;margin:0;max-width:470px}
+.feature-points{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.point{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:14px;border-radius:15px;font-size:.9rem}
+.point strong{display:block;font-size:1rem;margin-bottom:3px}
+footer{background:#203b31;color:#d9e9df;padding:30px 24px}
+.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:.88rem}
+footer strong{color:white}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:48px}.hero-art{min-height:300px}.grid{grid-template-columns:repeat(2,1fr)}.feature-band{grid-template-columns:1fr}}
+@media(max-width:560px){.nav{padding:13px 18px}.navlinks{gap:12px}.navlinks a:not(.nav-cta){display:none}main{padding:0 18px}.hero{padding:42px 0 35px;gap:12px}h1{letter-spacing:-2px}.hero-art{min-height:250px}.blob{height:240px}.book-stack{transform:scale(.8)}.section-head{display:block}.section-head h2{font-size:1.7rem}.grid{grid-template-columns:1fr 1fr;gap:10px}.cover{height:135px}.cover span{font-size:2.7rem}.card{padding:9px;border-radius:17px}.card-body{padding:11px 3px 3px}.card h3{font-size:1.08rem}.card p{font-size:.82rem;min-height:60px}.meta{font-size:.68rem}.tag{padding:4px 7px}.read{font-size:.78rem}.feature-band{padding:25px 20px}.feature-points{grid-template-columns:1fr 1fr}.point{font-size:.8rem;padding:11px}}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Open Library</h1>
-    <p>Ruang untuk menemukan bacaan anak dan remaja</p>
-  </header>
+<header>
+  <nav class="nav">
+    <a class="brand" href="#"><span class="logo">📖</span> ruang<span style="color:#557e69">baca.</span></a>
+    <div class="navlinks">
+      <a href="#katalog">Jelajahi</a><a href="#tentang">Tentang</a><a class="nav-cta" href="#katalog">Mulai membaca</a>
+    </div>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <div>
+      <span class="eyebrow">✦ Perpustakaan cerita digital</span>
+      <h1>Setiap cerita punya <span>dunia</span> untuk dijelajahi.</h1>
+      <p>Temukan cerita pilihan, dongeng, dan bacaan pengetahuan yang membuka ruang imajinasi. Pilih cerita yang sesuai dengan usiamu, lalu lanjutkan membaca dari sumber aslinya.</p>
+      <div class="hero-actions"><a class="btn primary" href="#katalog">Jelajahi koleksi ↗</a><a class="btn secondary" href="#tentang">Kenali Ruang Baca</a></div>
+    </div>
+    <div class="hero-art" aria-label="Ilustrasi tumpukan buku">
+      <div class="blob"></div><span class="spark s1">✦</span><span class="spark s2">✳</span><span class="spark s3">✧</span>
+      <div class="book-stack"><div class="book one"><b>Petualangan<br>di Hutan</b><small>Kumpulan cerita</small></div><div class="book two"><b>Alam dan<br>Keajaiban</b><small>Seri pengetahuan</small></div><div class="book three"><b>Dunia<br>Dongeng</b><small>Ruang Baca</small></div></div>
+    </div>
+  </section>
 
-  <main>
-    <section class="intro">
-      <h2>Contoh Website untuk Uji Hosting</h2>
-      <p>
-        Ini adalah website latihan Divisi Jaringan. Halaman ini dibuat sederhana
-        untuk mencoba publikasi melalui GitHub Pages atau Blogger. Konten di
-        bawah hanya contoh, bukan katalog final Open Library.
-      </p>
-    </section>
-
-    <section class="cards" aria-label="Contoh kategori bacaan">
-      <article>
-        <span class="tag">Usia 3–8 tahun</span>
-        <h2>Dongeng Kancil</h2>
-        <p>Contoh kartu bacaan untuk menguji tampilan website.</p>
-        <a href="#" aria-label="Contoh tautan bacaan Kancil">Contoh tautan</a>
+  <section class="catalog" id="katalog">
+    <div class="section-head"><div><span class="eyebrow">Koleksi pilihan</span><h2>Temukan bacaanmu</h2><p>Jelajahi cerita berdasarkan judul, kategori, atau kelompok usia.</p></div></div>
+    <div class="toolbar">
+      <div class="search"><input id="search" type="search" placeholder="Cari judul atau ringkasan cerita..." aria-label="Cari bacaan"></div>
+      <select id="age" aria-label="Pilih kelompok usia"><option value="">Semua usia</option><option value="3–8 tahun">Usia 3–8 tahun</option><option value="9–12 tahun">Usia 9–12 tahun</option><option value="13–17 tahun">Usia 13–17 tahun</option></select>
+    </div>
+    <div class="chips" aria-label="Filter kategori">
+      <button class="chip active" data-category="Semua">Semua koleksi</button>
+      <button class="chip" data-category="Dongeng">Dongeng</button>
+      <button class="chip" data-category="Cerita rakyat">Cerita rakyat</button>
+      <button class="chip" data-category="Sains & alam">Sains & alam</button>
+      <button class="chip" data-category="Kehidupan sehari-hari">Kehidupan sehari-hari</button>
+    </div>
+    <div class="grid" id="bookGrid">
+      <article class="card" data-title="Kancil dan Buaya" data-category="Cerita rakyat" data-age="3–8 tahun">
+        <div class="cover peach"><span>🦊</span></div><div class="card-body"><div class="meta"><span class="tag">Cerita rakyat</span><span>Indonesia</span></div><h3>Kancil dan Buaya</h3><p>Kisah tentang kecerdikan, keberanian, dan berpikir sebelum bertindak.</p><div class="card-bottom"><span class="age">Usia 3–8 tahun</span><a class="read" href="https://id.wikisource.org/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
       </article>
-
-      <article>
-        <span class="tag">Usia 9–12 tahun</span>
-        <h2>Cerita Rakyat</h2>
-        <p>Contoh kategori cerita rakyat untuk katalog Open Library.</p>
-        <a href="#" aria-label="Contoh tautan cerita rakyat">Contoh tautan</a>
+      <article class="card" data-title="Asal Usul Danau Toba" data-category="Cerita rakyat" data-age="9–12 tahun">
+        <div class="cover blue"><span>🏞️</span></div><div class="card-body"><div class="meta"><span class="tag">Cerita rakyat</span><span>Sumatra</span></div><h3>Asal Usul Danau Toba</h3><p>Cerita rakyat yang mengajak pembaca mengenal legenda dari Sumatra Utara.</p><div class="card-bottom"><span class="age">Usia 9–12 tahun</span><a class="read" href="https://id.wikisource.org/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
       </article>
-
-      <article>
-        <span class="tag">Usia 13–17 tahun</span>
-        <h2>Sains dan Alam</h2>
-        <p>Contoh kategori pengetahuan untuk pembaca remaja.</p>
-        <a href="#" aria-label="Contoh tautan sains dan alam">Contoh tautan</a>
+      <article class="card" data-title="Mengapa Langit Berwarna Biru?" data-category="Sains & alam" data-age="9–12 tahun">
+        <div class="cover yellow"><span>☀️</span></div><div class="card-body"><div class="meta"><span class="tag">Sains & alam</span><span>Pengetahuan</span></div><h3>Mengapa Langit Biru?</h3><p>Kenali fenomena alam sederhana melalui pertanyaan yang dekat dengan keseharian.</p><div class="card-bottom"><span class="age">Usia 9–12 tahun</span><a class="read" href="https://badanbahasa.kemdikbud.go.id/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
       </article>
-    </section>
-  </main>
+      <article class="card" data-title="Putri dan Bintang Kecil" data-category="Dongeng" data-age="3–8 tahun">
+        <div class="cover lilac"><span>⭐</span></div><div class="card-body"><div class="meta"><span class="tag">Dongeng</span><span>Fantasi</span></div><h3>Putri dan Bintang Kecil</h3><p>Dongeng imajinatif tentang rasa ingin tahu dan persahabatan.</p><div class="card-bottom"><span class="age">Usia 3–8 tahun</span><a class="read" href="https://www.gutenberg.org/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
+      </article>
+      <article class="card" data-title="Hari Pertama di Sekolah" data-category="Kehidupan sehari-hari" data-age="9–12 tahun">
+        <div class="cover green"><span>🎒</span></div><div class="card-body"><div class="meta"><span class="tag">Kehidupan sehari-hari</span><span>Persahabatan</span></div><h3>Hari Pertama di Sekolah</h3><p>Cerita tentang beradaptasi, bertemu teman baru, dan saling menghargai.</p><div class="card-bottom"><span class="age">Usia 9–12 tahun</span><a class="read" href="https://literacycloud.org/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
+      </article>
+      <article class="card" data-title="Misi Menjaga Bumi" data-category="Sains & alam" data-age="13–17 tahun">
+        <div class="cover rose"><span>🌱</span></div><div class="card-body"><div class="meta"><span class="tag">Sains & alam</span><span>Lingkungan</span></div><h3>Misi Menjaga Bumi</h3><p>Kenali langkah sederhana untuk menjaga lingkungan dan mengurangi sampah.</p><div class="card-bottom"><span class="age">Usia 13–17 tahun</span><a class="read" href="https://www.unep.org/" target="_blank" rel="noopener">Baca sumber ↗</a></div></div>
+      </article>
+    </div>
+    <div class="empty" id="empty">Belum ada bacaan yang cocok. Coba kata kunci atau filter lain.</div>
+  </section>
 
-  <footer>
-    Website latihan Divisi Jaringan · Tidak menggunakan akun pengunjung atau formulir data pribadi
-  </footer>
+  <section class="feature-band" id="tentang">
+    <div><h2>Ruang yang ramah untuk tumbuh dan berimajinasi.</h2><p>Ruang Baca dirancang sebagai katalog bacaan digital yang ringan, mudah dijelajahi, dan dapat diakses tanpa membuat akun.</p></div>
+    <div class="feature-points">
+      <div class="point"><strong>♡ Mudah diakses</strong>Tanpa akun dan tanpa iklan.</div>
+      <div class="point"><strong>⌕ Mudah ditemukan</strong>Filter berdasarkan usia dan kategori.</div>
+      <div class="point"><strong>↗ Sumber jelas</strong>Arahkan pembaca ke sumber asli.</div>
+      <div class="point"><strong>▣ Ramah perangkat</strong>Tampilan menyesuaikan HP dan laptop.</div>
+    </div>
+  </section>
+</main>
+<footer><div class="footer-inner"><div><strong>ruangbaca.</strong> — Cerita untuk setiap imajinasi.</div><div>Contoh tampilan / demo pengembangan Open Library</div></div></footer>
+<script>
+const searchInput=document.getElementById('search');
+const ageSelect=document.getElementById('age');
+const cards=[...document.querySelectorAll('.card')];
+const chips=[...document.querySelectorAll('.chip')];
+let activeCategory='Semua';
+function filterBooks(){
+  const term=searchInput.value.toLowerCase().trim();
+  const age=ageSelect.value;
+  let shown=0;
+  cards.forEach(card=>{
+    const matchesText=(card.dataset.title+' '+card.innerText).toLowerCase().includes(term);
+    const matchesAge=!age||card.dataset.age===age;
+    const matchesCategory=activeCategory==='Semua'||card.dataset.category===activeCategory;
+    const visible=matchesText&&matchesAge&&matchesCategory;
+    card.style.display=visible?'':'none';
+    if(visible)shown++;
+  });
+  document.getElementById('empty').style.display=shown?'none':'block';
+}
+searchInput.addEventListener('input',filterBooks);
+ageSelect.addEventListener('change',filterBooks);
+chips.forEach(chip=>chip.addEventListener('click',()=>{
+  chips.forEach(item=>item.classList.remove('active'));
+  chip.classList.add('active');
+  activeCategory=chip.dataset.category;
+  filterBooks();
+}));
+</script>
 </body>
 </html>
-"""
-
-readme = """PANDUAN SINGKAT — WEBSITE LATIHAN OPEN LIBRARY
-
-Isi folder:
-- index.html: halaman website latihan.
-- Website ini hanya untuk mencoba hosting, bukan website final proyek.
-
-CARA MENCOBA DI GITHUB PAGES
-1. Ekstrak file ZIP ini.
-2. Masuk ke https://github.com dan login.
-3. Buat repository baru. Contoh nama: open-library-latihan
-4. Pilih repository tersebut, lalu pilih Add file > Upload files.
-5. Unggah index.html, kemudian tekan Commit changes.
-6. Buka Settings > Pages.
-7. Pada bagian Build and deployment, pilih Deploy from a branch.
-8. Pilih branch main dan folder /(root), lalu Save.
-9. Tunggu proses publikasi. GitHub akan menampilkan alamat website pada bagian Pages.
-10. Buka alamat tersebut dari HP dan laptop untuk menguji akses.
-
-CATATAN
-- Jangan unggah data pribadi atau informasi rahasia.
-- Pastikan repository berisi index.html di bagian utama (root).
-- Jika halaman belum muncul, tunggu sebentar lalu muat ulang.
-- Jangan menganggap percobaan ini sebagai publikasi final Open Library.
-- Simpan screenshot repository, pengaturan Pages, dan halaman yang berhasil dibuka sebagai bukti latihan.
-
-CATATAN UNTUK UJI AKSES
-Catat perangkat, jenis jaringan, waktu pengujian, apakah halaman berhasil dibuka,
-dan kendala yang muncul. Jangan mengarang hasil pengujian; isi berdasarkan percobaan nyata.
-"""
-
-(base / "index.html").write_text(html, encoding="utf-8")
-(base / "PETUNJUK.txt").write_text(readme, encoding="utf-8")
-
-zip_path = Path("/mnt/data/website_latihan_open_library.zip")
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    z.write(base / "index.html", arcname="index.html")
-    z.write(base / "PETUNJUK.txt", arcname="PETUNJUK.txt")
-
-print(f"File berhasil dibuat: {zip_path}")
