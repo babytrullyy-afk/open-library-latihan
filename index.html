@@ -1,0 +1,151 @@
+from pathlib import Path
+import zipfile
+
+base = Path("/mnt/data/open_library_latihan")
+base.mkdir(exist_ok=True)
+
+html = """<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Open Library - Latihan Hosting</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: #203040;
+      background: #f5f8fb;
+    }
+    header {
+      padding: 28px 18px;
+      text-align: center;
+      color: white;
+      background: #155b7a;
+    }
+    header h1 { margin: 0 0 6px; font-size: 2rem; }
+    header p { margin: 0; }
+    main { width: min(920px, 92%); margin: 28px auto; }
+    .intro {
+      padding: 18px;
+      margin-bottom: 20px;
+      background: white;
+      border-radius: 12px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+    }
+    article {
+      padding: 18px;
+      background: white;
+      border: 1px solid #dce6ed;
+      border-radius: 12px;
+    }
+    article h2 { margin-top: 0; color: #155b7a; font-size: 1.15rem; }
+    .tag {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: #e6f2f7;
+      color: #155b7a;
+      font-size: .85rem;
+    }
+    a { color: #075985; }
+    footer {
+      padding: 18px;
+      text-align: center;
+      color: #526575;
+      font-size: .9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Open Library</h1>
+    <p>Ruang untuk menemukan bacaan anak dan remaja</p>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>Contoh Website untuk Uji Hosting</h2>
+      <p>
+        Ini adalah website latihan Divisi Jaringan. Halaman ini dibuat sederhana
+        untuk mencoba publikasi melalui GitHub Pages atau Blogger. Konten di
+        bawah hanya contoh, bukan katalog final Open Library.
+      </p>
+    </section>
+
+    <section class="cards" aria-label="Contoh kategori bacaan">
+      <article>
+        <span class="tag">Usia 3–8 tahun</span>
+        <h2>Dongeng Kancil</h2>
+        <p>Contoh kartu bacaan untuk menguji tampilan website.</p>
+        <a href="#" aria-label="Contoh tautan bacaan Kancil">Contoh tautan</a>
+      </article>
+
+      <article>
+        <span class="tag">Usia 9–12 tahun</span>
+        <h2>Cerita Rakyat</h2>
+        <p>Contoh kategori cerita rakyat untuk katalog Open Library.</p>
+        <a href="#" aria-label="Contoh tautan cerita rakyat">Contoh tautan</a>
+      </article>
+
+      <article>
+        <span class="tag">Usia 13–17 tahun</span>
+        <h2>Sains dan Alam</h2>
+        <p>Contoh kategori pengetahuan untuk pembaca remaja.</p>
+        <a href="#" aria-label="Contoh tautan sains dan alam">Contoh tautan</a>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    Website latihan Divisi Jaringan · Tidak menggunakan akun pengunjung atau formulir data pribadi
+  </footer>
+</body>
+</html>
+"""
+
+readme = """PANDUAN SINGKAT — WEBSITE LATIHAN OPEN LIBRARY
+
+Isi folder:
+- index.html: halaman website latihan.
+- Website ini hanya untuk mencoba hosting, bukan website final proyek.
+
+CARA MENCOBA DI GITHUB PAGES
+1. Ekstrak file ZIP ini.
+2. Masuk ke https://github.com dan login.
+3. Buat repository baru. Contoh nama: open-library-latihan
+4. Pilih repository tersebut, lalu pilih Add file > Upload files.
+5. Unggah index.html, kemudian tekan Commit changes.
+6. Buka Settings > Pages.
+7. Pada bagian Build and deployment, pilih Deploy from a branch.
+8. Pilih branch main dan folder /(root), lalu Save.
+9. Tunggu proses publikasi. GitHub akan menampilkan alamat website pada bagian Pages.
+10. Buka alamat tersebut dari HP dan laptop untuk menguji akses.
+
+CATATAN
+- Jangan unggah data pribadi atau informasi rahasia.
+- Pastikan repository berisi index.html di bagian utama (root).
+- Jika halaman belum muncul, tunggu sebentar lalu muat ulang.
+- Jangan menganggap percobaan ini sebagai publikasi final Open Library.
+- Simpan screenshot repository, pengaturan Pages, dan halaman yang berhasil dibuka sebagai bukti latihan.
+
+CATATAN UNTUK UJI AKSES
+Catat perangkat, jenis jaringan, waktu pengujian, apakah halaman berhasil dibuka,
+dan kendala yang muncul. Jangan mengarang hasil pengujian; isi berdasarkan percobaan nyata.
+"""
+
+(base / "index.html").write_text(html, encoding="utf-8")
+(base / "PETUNJUK.txt").write_text(readme, encoding="utf-8")
+
+zip_path = Path("/mnt/data/website_latihan_open_library.zip")
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    z.write(base / "index.html", arcname="index.html")
+    z.write(base / "PETUNJUK.txt", arcname="PETUNJUK.txt")
+
+print(f"File berhasil dibuat: {zip_path}")
